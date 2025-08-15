@@ -9,67 +9,83 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/ext_power.h>
 
-// Nice!view CS pin configuration for P1.01
-&nice_view_spi {
-    cs-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
-};
-
-/ {
+ / {
     keymap {
         compatible = "zmk,keymap";
 
-        default_layer {
-// ------------------------------------------------------------------------------------------------------------
-// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
-// |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
-// |  CTRL |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-// | SHIFT |  Z  |  X  |  C   |  V   |  B   |   "["  |  |  "]"  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-//                     | ALT  | GUI  | LOWER|  SPACE |  | ENTER | RAISE| BSPC  | GUI   |
+        /* ---------- LAYER 0: BASE (per-hand order) ---------- */
+        layer_base: base {
             bindings = <
-&kp ESC   &kp N1 &kp N2 &kp N3   &kp N4   &kp N5                     &kp N6 &kp N7   &kp N8    &kp N9  &kp N0   &kp GRAVE
-&kp TAB   &kp Q  &kp W  &kp E    &kp R    &kp T                      &kp Y  &kp U    &kp I     &kp O   &kp P    &kp MINUS
-&kp LCTRL &kp A  &kp S  &kp D    &kp F    &kp G                      &kp H  &kp J    &kp K     &kp L   &kp SEMI &kp SQT
-&kp LSHFT &kp Z  &kp X  &kp C    &kp V    &kp B  &kp LBKT   &kp RBKT &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH &kp RSHFT
-                        &kp LALT &kp LGUI &mo 1  &kp SPACE  &kp RET  &mo 2  &kp BSPC &kp RGUI
-            >;
+                /* LEFT rows (6x4) */
+                &kp ESC   &kp N1   &kp N2    &kp N3    &kp N4    &kp N5
+                &kp TAB   &kp Q    &kp W     &kp E     &kp R     &kp T
+                &kp LSHFT &kp A    &kp S     &kp D     &kp F     &kp G
+                &mo 2     &kp Z    &kp X     &kp C     &kp V     &kp B
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+                /* LEFT thumbs (4) */
+                &kp LCTRL &kp LALT &kp LGUI  &kp SPACE
+
+                /* RIGHT rows (6x4) */
+                &kp N6    &kp N7   &kp N8    &kp N9    &kp N0     &kp SQT
+                &kp Y     &kp U    &kp I     &kp O     &kp P      &kp MINUS
+                &kp H     &kp J    &kp K     &kp L     &kp SEMI   &kp EQUAL
+                &kp N     &kp M    &kp COMMA &kp DOT   &kp SLASH  &kp RSHFT
+
+                /* RIGHT thumbs (4) */
+                &kp RET   &mo 1    &kp LBKT  &kp RBKT
+            >;
         };
 
-        lower_layer {
-// ------------------------------------------------------------------------------------------------------------
-// | BTCLR | BT1 | BT2 |  BT3 |  BT4 |  BT5 |                   |      |       |       |      |       |       |
-// |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
-// |   `   |  !  |  @  |  #   |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |   ~   |
-// |       |     |     |      |      |      |        |  |       |      |  _    |  +    |  {   |   }   |  "|"  |
-//                     |      |      |      |        |  |       |      |       |       |
+        /* ---------- LAYER 1: NAV (arrows, tilde, backspace, home/end) ---------- */
+        nav: layer_nav {
             bindings = <
-&bt BT_CLR &bt BT_SEL 0     &bt BT_SEL 1      &bt BT_SEL 2      &bt BT_SEL 3 &bt BT_SEL 4                 &trans    &trans    &trans          &trans    &trans    &trans
-&kp F1     &kp F2           &kp F3            &kp F4            &kp F5       &kp F6                       &kp F7    &kp F8    &kp F9          &kp F10   &kp F11   &kp F12
-&kp GRAVE  &kp EXCL         &kp AT            &kp HASH          &kp DOLLAR   &kp PRCNT                    &kp CARET &kp AMPS  &kp STAR         &kp LPAR  &kp RPAR  &kp TILDE
-&trans     &ext_power EP_ON &ext_power EP_OFF &ext_power EP_TOG &trans       &trans    &trans   &trans    &trans    &kp MINUS &kp PLUS        &kp LBRC  &kp RBRC  &kp PIPE
-                                              &trans            &trans       &trans    &trans   &trans    &trans    &trans    &trans
-            >;
+                /* LEFT rows */
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+                /* LEFT thumbs */
+                &trans &trans &trans &trans
+
+                /* RIGHT rows */
+                &trans &trans &trans &trans &trans &kp TILDE   /* SQT → `~ */
+                &trans &kp HOME &kp UP &kp END &trans &kp BSPC /* U=Home, I=Up, O=End, -_=Backspace */
+                &trans &kp LEFT &kp DOWN &kp RIGHT &trans &trans
+                &trans &trans &trans &trans &trans &trans
+
+                /* RIGHT thumbs */
+                &trans &trans &trans &trans
+            >;
         };
 
-        raise_layer {
-// ------------------------------------------------------------------------------------------------------------
-// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |   `   |  1  |  2  |  3   |  4   |  5   |                   |  6   |   7   |   8   |  9   |   0   |       |
-// |   F1  |  F2 |  F3 |  F4  |  F5  |  F6  |                   |      |   <-  |   v   |  ^   |  ->   |       |
-// |   F7  |  F8 |  F9 |  F10 |  F11 |  F12 |        |  |       |  +   |   -   |   =   |  [   |   ]   |   \   |
-//                     |      |      |      |        |  |       |      |       |       |
+        /* ---------- LAYER 2: FN (F1–F12 on number row) ---------- */
+        fn: layer_fn {
             bindings = <
-&trans    &trans &trans &trans  &trans  &trans                       &trans      &trans    &trans    &trans   &trans    &trans
-&kp GRAVE &kp N1 &kp N2 &kp N3  &kp N4  &kp N5                       &kp N6      &kp N7    &kp N8    &kp N9   &kp N0    &trans
-&kp F1    &kp F2 &kp F3 &kp F4  &kp F5  &kp F6                       &trans      &kp LEFT  &kp DOWN  &kp UP   &kp RIGHT &trans
-&kp F7    &kp F8 &kp F9 &kp F10 &kp F11 &kp F12   &trans   &trans    &kp KP_PLUS &kp MINUS &kp EQUAL &kp LBKT &kp RBKT  &kp BSLH
-                        &trans  &trans  &trans    &trans   &trans    &trans      &trans    &trans
-            >;
+                /* LEFT rows */
+                &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+                /* LEFT thumbs */
+                &trans &trans &trans &trans
+
+                /* RIGHT rows */
+                &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+
+                /* RIGHT thumbs */
+                &trans &trans &trans &trans
+            >;
         };
+
+        /* ---------- ENCODERS ---------- */
+        sensor-bindings = <
+            &inc_dec_kp C_BRIGHTNESS_INC C_BRIGHTNESS_DEC   /* left encoder: screen brightness */
+            &inc_dec_kp C_VOLUME_UP      C_VOLUME_DOWN      /* right encoder: volume */
+        >;
     };
 };

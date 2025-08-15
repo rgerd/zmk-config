@@ -1,0 +1,25 @@
+/ {
+    /* Unique labels; defined once here */
+    enc_left: aurora_left_ec11 {
+        compatible = "alps,ec11";
+        a-gpios = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <20>;                /* detented encoder; tune if needed */
+        status = "disabled";         /* enabled per-half below */
+    };
+
+    enc_right: aurora_right_ec11 {
+        compatible = "alps,ec11";
+        a-gpios = <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <24>;                /* smoother encoder */
+        status = "disabled";         /* enabled per-half below */
+    };
+
+    /* Order here MUST match keymap's sensor-bindings order */
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&enc_left &enc_right>;
+        triggers-per-rotation = <24>; /* default; applies to both */
+    };
+};
