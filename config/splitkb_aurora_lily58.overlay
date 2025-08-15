@@ -1,0 +1,4 @@
+// nice!view CS override for your P1.01 bodge
+&nice_view_adapter {
+    cs-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+};
